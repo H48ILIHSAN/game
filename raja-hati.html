@@ -6,7 +6,7 @@
         document.onkeydown = e => {
             if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) return false;
         };
-        document.addEventListener('contextmenu', e => { e.preventDefault(); grecaptcha.execute(); });
+        document.addEventListener('contextmenu', e => { e.preventDefault(); });
 
         document.onkeydown = function (e) {
             if (e.keyCode == 123) return false; // F12

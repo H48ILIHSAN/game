@@ -1,0 +1,27 @@
+<title>Raja Hati - JKT48 Solitaire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<style>body {margin: 0px;overflow: hidden;}iframe {display: block;width: 100vw;height: 100vh;border: none;}</style>
+<iframe src="https://storied-mandazi-b5cb96.netlify.app/" sandbox="allow-scripts allow-popups allow-modals allow-same-origin allow-forms allow-downloads allow-top-navigation allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox"></iframe>
+<script>
+        document.onkeydown = e => {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) return false;
+        };
+        document.addEventListener('contextmenu', e => { e.preventDefault(); grecaptcha.execute(); });
+
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) return false; // F12
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+        };
+
+        setInterval(() => {
+            const before = new Date().getTime();
+            debugger;
+            const after = new Date().getTime();
+            if (after - before > 100) {
+                document.body.innerHTML = "<div style='text-align:center;padding-top:20%;font-size:3rem;'>HIBIKUN DETECTED MALICIOUS ACTIVITY.<br>ACCESS DENIED.</div>";
+            }
+        }, 1000);
+</script>

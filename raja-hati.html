@@ -5,7 +5,8 @@
 <meta name="twitter:title" content="Raja Hati - JKT48 Solitaire">
 <meta name="twitter:image" content="https://pbs.twimg.com/media/HFsrHXUa8AASWpB?format=jpg">
 <style>
-        body {
+        body {margin: 0px;overflow: hidden;}iframe {display: block;width: 100vw;height: 100vh;border: none;}
+        .error {
             background-color: #2b0505;
             background-image:
                 radial-gradient(circle at center, rgba(139, 0, 0, 0.3) 0%, transparent 80%),
@@ -16,7 +17,7 @@
             min-height: 100vh;
             touch-action: manipulation;
         }
-        .victory-title {
+        .error-title {
             font-family: 'Playfair Display', serif;
             font-size: clamp(3rem, 10vw, 8rem);
             line-height: 1;
@@ -45,7 +46,7 @@
             debugger;
             const after = new Date().getTime();
             if (after - before > 100) {
-                document.getElementById('game-container').innerHTML = `<div class="victory-title" style="text-align:center;padding-top:20%;font-size:3rem;"">HIBIKUN AI...<br>HAYOLOCH, MAU NGAPAIN KAMU?!</div>`;
+                document.getElementById('game-container').innerHTML = `<div class="error"><div class="error-title" style="text-align:center;padding-top:20%;font-size:3rem;"">HIBIKUN AI...<br>HAYOLOCH, MAU NGAPAIN KAMU?!</div></div>`;
             }
         }, 1000);
 </script>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@HIBIKUN_">
+    <meta name="twitter:title" content="Gonna Jump! Fritzy!">
+    <meta name="twitter:description" content="Created by HIBIKUN 💤">
+    <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/2043126978052800512/BLBDJ2no_400x400.jpg">
+    <meta property="og:image" content="https://pbs.twimg.com/profile_images/2043126978052800512/BLBDJ2no_400x400.jpg">
+    <meta property="og:title" content="Gonna Jump! Fritzy!">
+    <meta property="og:description" content="Created by HIBIKUN 💤">
+    <meta property="og:type" content="website">
+    <title>Gonna Jump! Fritzy!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+        body {
+            position: relative;
+            max-width: 800px;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            border-left: 2px indigo solid;
+            border-right: 2px indigo solid;
+            background-color: #1a1a1a;
+        }
+
+        .body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 80px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            display: none;
+        }
+
+        #fritzy {
+            z-index: 10;
+            width: auto;
+            transition: height 0.2s ease-out, transform 0.1s;
+            object-fit: fill;
+        }
+
+        #fiony {
+            position: absolute;
+            bottom: 80px;
+            width: 165px;
+            height: 164px;
+            border-radius: 15px;
+            z-index: 5;
+            display: none;
+            transition: transform 0.1s linear;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: #4CAF50;
+            border-top: 5px solid #388E3C;
+        }
+
+        #lyrics-container {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            min-width: 200px;
+            max-width: 90%;
+            z-index: 40;
+            display: none;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #start-screen,
+        #message-box,
+        #end-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            text-align: center;
+            min-width: 320px;
+        }
+
+        #message-box {
+            top: 30%;
+            color: #ff4757;
+            border: 3px solid #ff4757;
+            display: none;
+        }
+
+        #end-screen {
+            display: none;
+            border: 4px solid #388E3C;
+        }
+
+        #start-screen {
+            border: 4px solid indigo;
+        }
+
+        .stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            display: none;
+        }
+
+        .volume-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 30;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        @keyframes jumpEffect {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-40px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .jumping {
+            animation: jumpEffect 0.2s ease-out;
+        }
+
+        .disabled {
+            filter: grayscale(0.5);
+            cursor: not-allowed !important;
+        }
+
+        .btn-main {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background-color: indigo;
+            color: white;
+            border-radius: 15px;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .btn-main:hover {
+            transform: scale(1.05);
+            background-color: purple;
+        }
+
+        .btn-restart {
+            background-color: #388E3C;
+        }
+
+        .smoke-effect {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            z-index: 6;
+            pointer-events: none;
+            animation: fadeOutSmoke 0.8s ease-out forwards;
+            object-fit: contain;
+        }
+
+        @keyframes fadeOutSmoke {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <div id="start-screen">
+            <h1 class="text-3xl mb-2 font-bold text-purple-700">Gonna Jump!</h1>
+            <p class="text-slate-500 mb-6 text-sm">Bantu naikin tinggi Fritzy sambil nyanyi!<br>Klik untuk melompat
+                tinggi!</p>
+            <div class="flex justify-center mb-6"><img src="https://pbs.twimg.com/media/HGXKIA3a0AAvOti?format=jpg"
+                    class="w-24 h-24 rounded-full border-4 border-indigo-100 shadow-lg" alt="Fritzy Preview"></div>
+            <button class="btn-main" onclick="startGame()">Mulai Game</button>
+        </div><button class="volume-control" onclick="toggleVolume(event)" id="volume-btn"><i
+                data-lucide="volume-2"></i></button>
+        <div id="message-box">Fritzy capek, istirahat bentar... 😴</div>
+        <div id="lyrics-container"></div>
+        <div id="end-screen">
+            <h2 class="text-2xl mb-2 font-bold">Selesai! 🎉</h2>
+            <p id="final-result" class="text-xl mb-4"></p><button class="btn-main btn-restart"
+                onclick="location.reload()">Main Lagi</button>
+        </div>
+        <div class="stats" id="game-stats">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Gonna Jump! Fritzy!</h2>
+            <p class="text-3xl font-black text-purple-700"><span id="height-display">155</span><span
+                    class="text-sm font-normal text-slate-500">cm</span></p>
+        </div>
+        <div id="game-container" onclick="handleJump()"><img id="fiony" src="./cepio.png" alt="Fiony"><img id="fritzy"
+                src="./standby.png" alt="Fritzy" style="height: 155px;
+">
+            <div class="ground"></div>
+        </div><audio id="bg-music">
+            <source src="./music.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script type="module">
+        import firebaseConfig from "./_fb.json" with{ type: "json"};
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app-check.js";
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const appCheck = initializeAppCheck(app, { provider: new ReCaptchaV3Provider("6LcnNJ4sAAAAAPtSBCbgnvfvORsfSFIJKI2MFgNB"), isTokenAutoRefreshEnabled: true });
+    </script>
+    <script>
+        lucide.createIcons();
+
+        const fritzy = document.getElementById('fritzy');
+        const fiony = document.getElementById('fiony');
+        const heightDisplay = document.getElementById('height-display');
+        const messageBox = document.getElementById('message-box');
+        const lyricsContainer = document.getElementById('lyrics-container');
+        const startScreen = document.getElementById('start-screen');
+        const endScreen = document.getElementById('end-screen');
+        const finalResult = document.getElementById('final-result');
+        const gameContainer = document.getElementById('game-container');
+        const gameStats = document.getElementById('game-stats');
+        const bgMusic = document.getElementById('bg-music');
+        const volumeBtn = document.getElementById('volume-btn');
+
+        const imgStandby = "./standby.png";
+        const imgJump = "./jump.png";
+        const imgRest = "./rest.png";
+        const initialHeight = 155;
+
+        let currentHeight = initialHeight;
+        let isTired = false;
+        let isGameOver = false;
+        let jumpCount = 0;
+        let nextTiredThreshold = getRandomThreshold();
+        let isMuted = false;
+        let gameActive = false;
+
+        const subtitles = [{ start: 4.710, end: 16.190, text: "Ayo mulai oi oi oi oi oi oi oi oi oi oi oi oi oi" }, { start: 16.190, end: 21.910, text: "Hei kalau Kamu benar Sayang" }, { start: 21.910, end: 27.030, text: "Ayo lompatlah di Tempatmu" }, { start: 27.030, end: 32.490, text: "Soalnya dari sini Kamu 'tak kelihatan" }, { start: 32.490, end: 39.740, text: "Supaya terlihat Love Me do" }, { start: 47.680, end: 53.310, text: "Kata apapun yang 'Kau teriakan" }, { start: 53.310, end: 58.950, text: "Terhapus oleh bisingnya sekitar" }, { start: 58.950, end: 63.460, text: "Tidak bisa terdengar dengan jelas" }, { start: 63.460, end: 70.300, text: "Perasaan 'pun juga takkan tersampaikan" }, { start: 70.300, end: 74.380, text: "Kalau malu ya berhenti saja" }, { start: 74.380, end: 82.070, text: "Niatmu hanya sebatas itu 'kan" }, { start: 82.070, end: 87.020, text: "Hei kalau Kamu benar Sayang" }, { start: 87.020, end: 92.740, text: "Lompatlah tanpa malu malu" }, { start: 92.740, end: 98.360, text: "Lebih Tinggi dari Siapapun juga" }, { start: 98.360, end: 103.830, text: "Ayo melompatlah buatlah \"Ku melihat ke arahmu" }, { start: 103.830, end: 108.520, text: "Hei kalau Kamu benar Sayang" }, { start: 108.520, end: 113.990, text: "Lompatlah sekuat tenaga" }, { start: 113.990, end: 119.450, text: "Ayo lebih crazy berikanlah Padaku" }, { start: 119.450, end: 126.440, text: "Buatlah Aku takjub You Love Me" }, { start: 129.010, end: 134.720, text: "Apabila 'tak berbuat sesuatu" }, { start: 134.720, end: 140.340, text: "Maka apapun 'tak akan terjadi" }, { start: 140.340, end: 145.130, text: "Mimpi 'pun berakhir sebatas Mimpi" }, { start: 145.130, end: 151.010, text: "Ayo lebih aktiflah tunjukan dirimu" }, { start: 151.010, end: 155.710, text: "Kau tertutup Orang orang lain" }, { start: 155.710, end: 163.740, text: "Rasa Sayang juga 'tak akan dihiraukan" }, { start: 163.740, end: 168.600, text: "Ya kalau memang 'Kau serius" }, { start: 168.600, end: 174.570, text: "Sekarang juga melompatlah" }, { start: 174.570, end: 180.290, text: "Pada diriku ini sampaikan perasaanmu" }, { start: 180.290, end: 185.330, text: "Gunakan apapun hingga Karyamu bisa mencapai ke Langit" }, { start: 185.330, end: 189.930, text: "Ya kalau memang 'Kau serius" }, { start: 189.930, end: 195.650, text: "Melompatlah tanpa terpikir" }, { start: 195.650, end: 200.760, text: "Tunjukanlah dirimu lebih jelas lagi" }, { start: 200.760, end: 207.590, text: "Buatlah 'Ku terkejut Love Me Do" }, { start: 209.730, end: 213.220, text: "Gonna jump gonna jump Demi diriku ini" }, { start: 213.220, end: 216.640, text: "Gonna jump gonna jump Sekuat tenaga" }, { start: 216.640, end: 221.420, text: "Hentakkan tanah melayang di Langit" }, { start: 221.420, end: 226.110, text: "Perasaan yang tersimpan di Hati" }, { start: 226.110, end: 232.000, text: "1 langkah coba lompatlah sekarang" }, { start: 236.690, end: 242.060, text: "Hei kalau Kamu benar Sayang" }, { start: 242.060, end: 246.940, text: "Lompatlah tanpa malu malu" }, { start: 246.940, end: 252.990, text: "Lebih Tinggi dari Siapapun juga" }, { start: 252.990, end: 258.620, text: "Ayo melompatlah buatlah 'Ku melihat ke arahmu" }, { start: 258.620, end: 263.400, text: "Hei kalau Kamu benar Sayang" }, { start: 263.400, end: 268.860, text: "Lompatlah sekuat tenaga" }, { start: 268.860, end: 274.070, text: "Ayo lebih crazy berikanlah padaku" }, { start: 274.070, end: 281.490, text: "Buatlah Aku takjub You Love Me" }];
+        function startGame() {
+            startScreen.style.display = 'none';
+            gameContainer.style.display = 'flex';
+            gameStats.style.display = 'block';
+            volumeBtn.style.display = 'flex';
+            gameActive = true;
+            bgMusic.play().catch(e => {
+                console.log("Audio play blocked, waiting for first jump");
+            });
+            scheduleFiony();
+        } function getRandomThreshold() {
+            return Math.floor(Math.random() * 9) + 7;
+        } function scheduleFiony() {
+            if (isGameOver) return;
+            const delay = Math.random() * 10000 + 5000;
+            setTimeout(() => {
+                if (!isGameOver) {
+                    runFiony();
+                    scheduleFiony();
+                }
+            }, delay);
+        } function runFiony() {
+            const containerWidth = window.innerWidth;
+            const fromLeft = Math.random() > 0.5;
+            fiony.style.display = 'block';
+            if (fromLeft) {
+                fiony.style.left = '0px';
+                fiony.style.transform = 'scaleX(1)';
+                animateFiony(-200, containerWidth + 200);
+            } else {
+                fiony.style.left = containerWidth + 'px';
+                fiony.style.transform = 'scaleX(-1)';
+                animateFiony(200 + containerWidth, -200);
+            }
+        } function animateFiony(start, end) {
+            let currentPos = start;
+            const speed = 4;
+            const isToRight = end > start;
+            function step() {
+                if (isGameOver) {
+                    fiony.style.display = 'none';
+                    return;
+                } currentPos = isToRight ? currentPos + speed : currentPos - speed;
+                fiony.style.left = currentPos + 'px';
+                const reachedEnd = isToRight ? currentPos >= end : currentPos <= end;
+                if (reachedEnd) {
+                    createSmoke(currentPos, fiony.offsetTop);
+                } else {
+                    requestAnimationFrame(step);
+                }
+            } requestAnimationFrame(step);
+        } function createSmoke(x, y) {
+            const smoke = document.createElement('img');
+            smoke.src = "./asap.png";
+            smoke.className = "smoke-effect";
+            smoke.style.left = (x + 30) + "px";
+            smoke.style.top = y + "px";
+            smoke.style.filter = "invert(1)";
+            gameContainer.appendChild(smoke);
+            setTimeout(() => {
+                smoke.remove();
+            }, 800);
+        } function getRandomThreshold() {
+            return Math.floor(Math.random() * 9) + 7;
+        } function toggleVolume(event) {
+            event.stopPropagation();
+            isMuted = !isMuted;
+            bgMusic.muted = isMuted;
+            const iconName = isMuted ? 'volume-x' : 'volume-2';
+            volumeBtn.innerHTML = `<i data-lucide="${iconName}"></i>`;
+            lucide.createIcons();
+        } bgMusic.ontimeupdate = function () {
+            if (isGameOver || !gameActive) return;
+            const currentTime = bgMusic.currentTime;
+            const activeSubtitle = subtitles.find(s => currentTime >= s.start && currentTime <= s.end);
+            if (activeSubtitle) {
+                lyricsContainer.innerText = activeSubtitle.text;
+                lyricsContainer.style.display = 'block';
+            } else {
+                lyricsContainer.style.display = 'none';
+            }
+        };
+        bgMusic.onended = function () {
+            gameOver();
+        };
+        function handleJump() {
+            if (!gameActive || isTired || isGameOver) return;
+            if (bgMusic.paused) {
+                bgMusic.play();
+            } jumpCount++;
+            currentHeight += 0.1;
+            fritzy.style.height = currentHeight + "px";
+            fritzy.style.width = 155 + currentHeight / 10 + "px";
+            heightDisplay.innerText = currentHeight.toFixed(1);
+            fritzy.src = imgJump;
+            fritzy.classList.add('jumping');
+            setTimeout(() => {
+                if (!isTired && !isGameOver) {
+                    fritzy.src = imgStandby;
+                } fritzy.classList.remove('jumping');
+            }, 200);
+            if (jumpCount >= nextTiredThreshold) {
+                becomeTired();
+            }
+        } function becomeTired() {
+            isTired = true;
+            messageBox.style.display = 'block';
+            fritzy.src = imgRest;
+            gameContainer.classList.add('disabled');
+            const restDuration = Math.floor(Math.random() * 1000) + 2000;
+            setTimeout(() => {
+                if (isGameOver) return;
+                isTired = false;
+                jumpCount = 0;
+                nextTiredThreshold = getRandomThreshold();
+                messageBox.style.display = 'none';
+                fritzy.src = imgStandby;
+                gameContainer.classList.remove('disabled');
+            }, restDuration);
+        } function gameOver() {
+            isGameOver = true;
+            gameActive = false;
+            const addedHeight = currentHeight - initialHeight;
+            finalResult.innerHTML = `Tinggi Fritzy Bertambah <span class="text-green-600 font-bold">${addedHeight.toFixed(1)} cm</span>!`;
+            endScreen.style.display = 'block';
+            messageBox.style.display = 'none';
+            lyricsContainer.style.display = 'none';
+            gameContainer.classList.add('disabled');
+            fritzy.src = imgStandby;
+            bgMusic.pause();
+        } [imgStandby, imgJump, imgRest].forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+
+        document.onkeydown = e => {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) return false;
+
+        };
+
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            grecaptcha.execute();
+        });
+
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        };
+
+        setInterval(() => {
+            const before = new Date().getTime();
+            debugger;
+            const after = new Date().getTime();
+            if (after - before > 100) {
+                document.getElementById('game-container').innerHTML = `<div class="victory-title" style="text-align:center;padding-top:20%;font-size:3rem;"><span class="text-sm">HIBIKUN AI...</span><br>HAYOLOCH, MAU NGAPAIN KAMU?!</div>`;
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS Apa?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #4a154b;
+            --purple-dark: #2d0b31;
+            --purple-light: #7c3aed;
+            --purple-accent: #a855f7;
+            --gold-primary: #d4af37;
+            --gold-light: #fef08a;
+            --gold-dark: #b45309;
+            --bg-gradient: linear-gradient(135deg, #1e092b 0%, #320d42 50%, #170520 100%);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(212, 175, 55, 0.3);
+            --text-light: #f3e8ff;
+            --text-gold: #fde047;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Open Sans", sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            font-family: "Cinzel", serif;
+            background: linear-gradient(to right, #fef08a, #d4af37, #fef08a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #c084fc;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #6b21a8, #4c1d95);
+            color: var(--gold-light);
+            border: 1px solid var(--gold-primary);
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #7e22ce, #5b21b6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            color: #ffffff;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37, #b45309);
+            color: #1e092b;
+            border: 1px solid #fef08a;
+            font-weight: 800;
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #fef08a, #d4af37);
+            color: #000;
+            box-shadow: 0 6px 20px rgba(254, 240, 138, 0.5);
+        }
+
+        .btn-teal {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: #ecfdf5;
+            border: 1px solid #34d399;
+        }
+
+        .btn-teal:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            max-width: 980px;
+            width: 100%;
+        }
+
+        /* GRID HATI & LAYOUT */
+        .game-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .board-wrapper {
+            position: relative;
+            background: rgba(20, 5, 30, 0.6);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: inset 0 0 30px rgba(124, 58, 237, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #crossword-board {
+            display: grid;
+            grid-template-columns: repeat(11, 36px);
+            grid-template-rows: repeat(10, 36px);
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .cell {
+            width: 36px;
+            height: 36px;
+            position: relative;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .cell.blocked {
+            background: transparent;
+            border: none;
+            opacity: 0.15;
+        }
+
+        .cell.heart-empty {
+            background: rgba(88, 28, 135, 0.25);
+            border: 1px dashed rgba(212, 175, 55, 0.3);
+        }
+
+        .cell.active {
+            background: linear-gradient(145deg, #3b0764, #581c87);
+            border: 1.5px solid var(--gold-primary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+        }
+
+        .cell.active:focus-within {
+            border-color: #fef08a;
+            box-shadow: 0 0 15px rgba(254, 240, 138, 0.6);
+            transform: scale(1.08);
+            z-index: 10;
+        }
+
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            background: transparent;
+            color: var(--gold-light);
+            outline: none;
+            padding-top: 4px;
+            caret-color: var(--gold-primary);
+        }
+
+        .cell .num {
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 9px;
+            color: var(--gold-primary);
+            font-weight: 800;
+            pointer-events: none;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .questions-container {
+            flex: 1;
+            min-width: 300px;
+            max-height: 440px;
+            overflow-y: auto;
+            padding-right: 10px;
+            background: rgba(15, 3, 25, 0.5);
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .questions-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .questions-container::-webkit-scrollbar-thumb {
+            background: var(--gold-primary);
+            border-radius: 3px;
+        }
+
+        .q-title {
+            font-weight: 800;
+            color: var(--gold-primary);
+            font-size: 1.05rem;
+            margin-top: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .q-item {
+            font-size: 13.5px;
+            margin: 10px 0;
+            line-height: 1.5;
+            color: #e9d5ff;
+            padding: 8px 10px;
+            background: rgba(88, 28, 135, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--gold-primary);
+            transition: all 0.2s;
+        }
+
+        .q-item:hover {
+            background: rgba(124, 58, 237, 0.4);
+            transform: translateX(3px);
+        }
+
+        .q-item b {
+            color: var(--gold-light);
+        }
+
+        /* CMS */
+        .hidden {
+            display: none !important;
+        }
+
+        .cms-card {
+            background: rgba(30, 9, 43, 0.7);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 13.5px;
+            margin-bottom: 6px;
+            color: var(--gold-light);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(15, 3, 25, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(88, 28, 135, 0.6);
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        td {
+            background: rgba(20, 5, 30, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            border: 1px solid #fca5a5;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            margin-top: 12px;
+            color: #c084fc;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 3, 25, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: linear-gradient(135deg, #2d0b31 0%, #1e092b 100%);
+            border: 1px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.2);
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            color: var(--gold-light);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .modal-message {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1 class="mb-4 text-4xl font-heading font-bold leading-tight text-stardust sm:text-5xl lg:text-6xl">Teka-Teki
+            Silang Hillaryours</h1>
+        <div class="subtitle">Lorem Ipsum</div>
+    </div>
+
+    <!-- div class="nav-btns">
+        <button class="btn btn-gold" id="btn-nav-game" onclick="navigateTo('game')">🎮 Main Game</button>
+        <button class="btn" id="btn-nav-cms" onclick="navigateTo('cms')">⚙️ CMS / Kelola Soal</button>
+    </!-->
+
+    <div class="container">
+        <!-- GAME SCREEN -->
+        <div id="game-screen">
+            <div class="action-bar">
+                <button class="btn btn-gold" onclick="initGame()">🔄 Acak & Mulai Game Baru (10 Soal)</button>
+                <button class="btn btn-teal" onclick="checkAnswers()">✅ Cek Jawaban</button>
+            </div>
+
+            <div class="game-layout">
+                <div class="board-wrapper">
+                    <div id="crossword-board"></div>
+                    
+                    <!-- div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-box"
+                                style="background: linear-gradient(145deg, #3b0764, #581c87); border: 1px solid #d4af37;">
+                            </div>
+                            <span>Kotak Jawaban</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box"
+                                style="background: rgba(88, 28, 135, 0.25); border: 1px dashed rgba(212, 175, 55, 0.3);">
+                            </div>
+                            <span>Grid Hati (Kosong)</span>
+                        </div>
+                    </-->
+                </div>
+
+                <div class="questions-container">
+                    <div class="q-title">➡️ Mendatar (Across)</div>
+                    <div id="across-questions"></div>
+                    <div class="q-title" style="margin-top:20px;">⬇️ Menurun (Down)</div>
+                    <div id="down-questions"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CMS SCREEN -->
+        <div id="cms-screen" class="hidden">
+            <div class="cms-card">
+                <h3 style="color: var(--gold-light); margin-bottom: 15px;">➕ Tambah Soal Baru</h3>
+                <form id="add-q-form" onsubmit="saveQuestion(event)">
+                    <div class="form-group">
+                        <label>Pertanyaan / Petunjuk:</label>
+                        <textarea id="input-q" required rows="2" placeholder="Masukkan pertanyaan TTS..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Jawaban (Maks. 10 Huruf, Tanpa Spasi):</label>
+                        <input type="text" id="input-a" required style="text-transform: uppercase;" maxlength="10"
+                            placeholder="CONTOH">
+                    </div>
+                    <button type="submit" class="btn btn-gold">💾 Simpan Ke CMS</button>
+                </form>
+            </div>
+
+            <div class="cms-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: var(--gold-light);">📚 Daftar Bank Soal (<span id="q-count">0</span>)</h3>
+                    <button onclick="resetDefaultQuestions()" class="btn-danger">🔄 Reset ke Default</button>
+                </div>
+
+                <div style="max-height: 280px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Pertanyaan</th>
+                                <th>Jawaban</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="questions-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POP-UP MODAL CONTAINER -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modal-title" class="modal-title">Pemberitahuan</div>
+            <div id="modal-message" class="modal-message">Pesan modal...</div>
+            <div class="modal-actions">
+                <button id="modal-btn-cancel" class="btn hidden" onclick="closeModal(false)">Batal</button>
+                <button id="modal-btn-confirm" class="btn btn-gold" onclick="closeModal(true)">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ROUTER SYSTEM (?cms)
+        function navigateTo(screen) {
+            const url = new URL(window.location);
+            if (screen === 'cms') {
+                url.searchParams.set('cms', '');
+            } else {
+                url.searchParams.delete('cms');
+            }
+            window.history.pushState({}, '', url);
+            handleRouting();
+        }
+
+        
+        function handleRouting() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isCms = urlParams.has('cms');
+
+            /*
+
+            const gameScreen = document.getElementById('game-screen');
+            const cmsScreen = document.getElementById('cms-screen');
+            const btnGame = document.getElementById('btn-nav-game');
+            const btnCms = document.getElementById('btn-nav-cms');
+
+            if (isCms) {
+                gameScreen.classList.add('hidden');
+                cmsScreen.classList.remove('hidden');
+                btnCms.classList.add('btn-gold');
+                btnGame.classList.remove('btn-gold');
+            } else {
+                cmsScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+                btnGame.classList.add('btn-gold');
+                btnCms.classList.remove('btn-gold');
+            }
+
+            */
+        }
+
+        window.onpopstate = handleRouting;
+
+        // POP-UP MODAL SYSTEM
+        let modalResolveFunc = null;
+
+        function showModal(title, message, isConfirm = false) {
+            return new Promise((resolve) => {
+                modalResolveFunc = resolve;
+                document.getElementById('modal-title').innerText = title;
+                document.getElementById('modal-message').innerText = message;
+
+                const cancelBtn = document.getElementById('modal-btn-cancel');
+                if (isConfirm) {
+                    cancelBtn.classList.remove('hidden');
+                } else {
+                    cancelBtn.classList.add('hidden');
+                }
+
+                document.getElementById('custom-modal').classList.add('active');
+            });
+        }
+
+        function closeModal(result) {
+            document.getElementById('custom-modal').classList.remove('active');
+            if (modalResolveFunc) {
+                modalResolveFunc(result);
+                modalResolveFunc = null;
+            }
+        }
+
+        // GRID HATI & DEFAULT QUESTIONS
+        const HEART_MASK = [
+            [0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0],
+            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+
+        const DEFAULT_QUESTIONS = [
+            { q: "Organ pemompa darah dalam tubuh manusia", a: "JANTUNG" },
+            { q: "Simbol kasih sayang dan perasaan mendalam", a: "CINTA" },
+            { q: "Bunga indah berduri simbol romantisme", a: "MAWAR" },
+            { q: "Rasa manis utama yang dihasilkan tebu", a: "GULA" },
+            { q: "Pasangan atau pendamping pria", a: "WANITA" },
+            { q: "Ikatan suci dalam pernikahan", a: "JANJI" },
+            { q: "Rasa bahagia dan gembira di hati", a: "SENANG" },
+            { q: "Tempat hangat berlindung keluarga", a: "RUMAH" },
+            { q: "Perhiasan berharga di jari manis", a: "CINCIN" },
+            { q: "Perasaan rindu ingin segera bertemu", a: "KANGEN" },
+            { q: "Benda langit pemancar cahaya malam hari", a: "BULAN" },
+            { q: "Bintang penerang di siang hari", a: "SURYA" },
+            { q: "Warna simbol keberanian dan keberuntungan", a: "MERAH" },
+            { q: "Alas kepala empuk saat tidur nyenyak", a: "BANTAL" },
+            { q: "Suasana tenang tanpa ketakutan", a: "DAMAI" },
+            { q: "Warna emas yang melambangkan kemewahan", a: "KUNING" },
+            { q: "Minuman manis berkadar gula tinggi", a: "MADU" },
+            { q: "Kilau batu mulia sangat berharga", a: "INTAN" }
+        ];
+
+        let questionBank = [];
+        let currentGameWords = [];
+
+        function loadQuestions() {
+            const data = localStorage.getItem('tts_questions_gold_purple');
+            if (data) {
+                questionBank = JSON.parse(data);
+            } else {
+                questionBank = [...DEFAULT_QUESTIONS];
+                saveToLocalStorage();
+            }
+            renderCMSTable();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('tts_questions_gold_purple', JSON.stringify(questionBank));
+        }
+
+        // GAME ENGINE
+        async function initGame() {
+            if (questionBank.length < 10) {
+                await showModal("Peringatan", "Jumlah soal di CMS minimal 10 soal! Silakan tambah soal terlebih dahulu.");
+                return;
+            }
+
+            const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            const selectedQuestions = shuffled.slice(0, 10);
+
+            generateHeartCrossword(selectedQuestions);
+        }
+
+        function generateHeartCrossword(questions) {
+            const rows = 10, cols = 11;
+            let grid = Array.from({ length: rows }, () => Array(cols).fill(''));
+            let cellNums = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+            currentGameWords = [];
+            let wordNum = 1;
+
+            questions.sort((a, b) => b.a.length - a.a.length);
+
+            questions.forEach(item => {
+                const word = item.a.toUpperCase();
+                let placed = false;
+
+                const orientations = Math.random() > 0.5 ? ['across', 'down'] : ['down', 'across'];
+
+                for (let dir of orientations) {
+                    if (placed) break;
+
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            if (canPlaceWord(word, r, c, dir, grid)) {
+                                placeWord(word, r, c, dir, grid);
+
+                                if (cellNums[r][c] === 0) {
+                                    cellNums[r][c] = wordNum++;
+                                }
+
+                                currentGameWords.push({
+                                    num: cellNums[r][c],
+                                    q: item.q,
+                                    a: word,
+                                    row: r,
+                                    col: c,
+                                    dir: dir
+                                });
+
+                                placed = true;
+                                break;
+                            }
+                        }
+                        if (placed) break;
+                    }
+                }
+            });
+
+            renderBoard(grid, cellNums);
+            renderQuestions();
+        }
+
+        function canPlaceWord(word, r, c, dir, grid) {
+            const len = word.length;
+            if (dir === 'across') {
+                if (c + len > 11) return false;
+                for (let i = 0; i < len; i++) {
+                    if (HEART_MASK[r][c + i] === 0) return false;
+                    if (grid[r][c + i] !== '' && grid[r][c + i] !== word[i]) return false;
+                }
+            } else {
+                if (r + len > 10) return false;
+                for (let i = 0; i < len; i++) {
+                    if (HEART_MASK[r + i][c] === 0) return false;
+                    if (grid[r + i][c] !== '' && grid[r + i][c] !== word[i]) return false;
+                }
+            }
+            return true;
+        }
+
+        function placeWord(word, r, c, dir, grid) {
+            for (let i = 0; i < word.length; i++) {
+                if (dir === 'across') grid[r][c + i] = word[i];
+                else grid[r + i][c] = word[i];
+            }
+        }
+
+        function renderBoard(grid, cellNums) {
+            const board = document.getElementById('crossword-board');
+            board.innerHTML = '';
+
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 11; c++) {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = 'cell';
+
+                    const isInsideHeart = HEART_MASK[r][c] === 1;
+                    const hasLetter = grid[r][c] !== '';
+
+                    if (hasLetter) {
+                        cellDiv.classList.add('active');
+
+                        if (cellNums[r][c] > 0) {
+                            const numSpan = document.createElement('span');
+                            numSpan.className = 'num';
+                            numSpan.innerText = cellNums[r][c];
+                            cellDiv.appendChild(numSpan);
+                        }
+
+                        const input = document.createElement('input');
+                        input.maxLength = 1;
+                        input.dataset.row = r;
+                        input.dataset.col = c;
+                        input.dataset.correct = grid[r][c];
+
+                        input.addEventListener('keyup', (e) => {
+                            if (e.target.value.length === 1 && e.key !== "Backspace") {
+                                const allInputs = Array.from(document.querySelectorAll('#crossword-board input'));
+                                const idx = allInputs.indexOf(input);
+                                if (idx >= 0 && idx < allInputs.length - 1) {
+                                    allInputs[idx + 1].focus();
+                                }
+                            }
+                        });
+
+                        cellDiv.appendChild(input);
+                    } else if (isInsideHeart) {
+                        cellDiv.classList.add('heart-empty');
+                    } else {
+                        cellDiv.classList.add('blocked');
+                    }
+                    board.appendChild(cellDiv);
+                }
+            }
+        }
+
+        function renderQuestions() {
+            const acrossEl = document.getElementById('across-questions');
+            const downEl = document.getElementById('down-questions');
+            acrossEl.innerHTML = '';
+            downEl.innerHTML = '';
+
+            currentGameWords.sort((a, b) => a.num - b.num);
+
+            currentGameWords.forEach(w => {
+                const item = document.createElement('div');
+                item.className = 'q-item';
+                item.innerHTML = `<b>${w.num}.</b> ${w.q} <span style="opacity:0.8; font-size:11px; color:#d4af37;">(${w.a.length} Huruf)</span>`;
+
+                if (w.dir === 'across') acrossEl.appendChild(item);
+                else downEl.appendChild(item);
+            });
+        }
+
+        async function checkAnswers() {
+            const inputs = document.querySelectorAll('#crossword-board input');
+            let correctCount = 0;
+            let total = inputs.length;
+
+            if (total === 0) return;
+
+            inputs.forEach(input => {
+                const userVal = input.value.toUpperCase();
+                const correctVal = input.dataset.correct;
+
+                if (userVal === correctVal) {
+                    input.style.color = '#34d399';
+                    input.parentElement.style.borderColor = '#34d399';
+                    correctCount++;
+                } else {
+                    input.style.color = '#f87171';
+                    input.parentElement.style.borderColor = '#f87171';
+                }
+            });
+
+            if (correctCount === total) {
+                await showModal("Selamat! 🎉", "LUAR BIASA! Anda berhasil menyelesaikan semua Teka-Teki Silang Hati!");
+            } else {
+                await showModal("Hasil Cek", `Hasil: ${correctCount} dari ${total} huruf benar. Semangat mencoba lagi!`);
+            }
+        }
+
+        // CMS ENGINE
+        function renderCMSTable() {
+            const tbody = document.getElementById('questions-table');
+            document.getElementById('q-count').innerText = questionBank.length;
+            tbody.innerHTML = '';
+
+            questionBank.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.q}</td>
+                    <td><b style="color:var(--gold-light);">${item.a}</b></td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteQuestion(${index})">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function saveQuestion(e) {
+            e.preventDefault();
+            const qInput = document.getElementById('input-q');
+            const aInput = document.getElementById('input-a');
+
+            const newQ = qInput.value.trim();
+            const newA = aInput.value.trim().toUpperCase().replace(/\s+/g, '');
+
+            if (newA.length < 2 || newA.length > 10) {
+                await showModal("Kesalahan Input", "Jawaban harus terdiri dari 2 hingga 10 huruf agar muat di grid Hati.");
+                return;
+            }
+
+            questionBank.unshift({ q: newQ, a: newA });
+            saveToLocalStorage();
+            renderCMSTable();
+
+            qInput.value = '';
+            aInput.value = '';
+            await showModal("Berhasil", "Soal berhasil ditambahkan ke CMS!");
+        }
+
+        async function deleteQuestion(index) {
+            const confirmed = await showModal("Konfirmasi Hapus", "Hapus pertanyaan ini dari bank soal?", true);
+            if (confirmed) {
+                questionBank.splice(index, 1);
+                saveToLocalStorage();
+                renderCMSTable();
+            }
+        }
+
+        async function resetDefaultQuestions() {
+            const confirmed = await showModal("Konfirmasi Reset", "Kembalikan bank soal ke pilihan awal?", true);
+            if (confirmed) {
+                questionBank = [...DEFAULT_QUESTIONS];
+                saveToLocalStorage();
+                renderCMSTable();
+            }
+        }
+
+        // INITIALIZATION
+        handleRouting();
+        loadQuestions();
+        initGame();
+    </script>
+</body>
+
+</html>
